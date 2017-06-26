@@ -45,40 +45,44 @@ format_url<-function(lat,long,radius,type,key){
         return(paste("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=", lat, ",", long, "&radius=",radius,"&type=",type,"&key=",key,sep=""))
 }
 
-## Function to get url of next page token
-next_page<-function(json){
-        if (!is.null(json$next_page_token)){
-                token<-json$next_page_token
-                urll<-paste(urll,"&pagetoken=", token, sep="")
-                return(urll)
-        }
-        else {
-                return(NULL)
-        }
-}
+# ## Function to get url of next page token
+# next_page<-function(q){
+#         if (!is.null(q$next_page_token)){
+#                 token<-q$next_page_token
+#                 urll<-paste(url_query,"&pagetoken=", token, sep="")
+#                 return(urll)
+#         }
+#         else {
+#                 return(NULL)
+#         }
+# }
 
 ## Function that performs the query and resolves the pagination tokens
 # url_query: url with the parameters to search
-places_query<-function(url_query){
+places_query<-function(url_){
+        url_<-url_
         iter<-0
-        term_cond<-""
+        token<-""
         sdoc<-list()
         data<-list()
-        url_query2<-url_query
-        while(!is.null(term_cond)){
+        url_query2<-url_
+        while("next_page_token" %in% names(data[[iter]])){
                 iter<-iter+1
                 sdoc[[iter]]<-getURL(url_query2) 
                 data[[iter]]<-fromJSON(sdoc[[iter]])
-                url_query2<-next_page(data[[iter]])
-                term_cond<-data[[iter]]$next_page_token
-               }
+                token<-data[[iter]]$next_page_token
+                url_query2<-paste(url_,"&pagetoken=", token, sep="")
+                #token<-data[[iter]]$next_page_token
+                #url_query2<-paste(url_,"&pagetoken=", token, sep="")
+                #print(url_query2)
+        }
         return(data)
 }
 
 key<-"AIzaSyCIsAa6qFbyca8ntlIjZTPedtGGAos-R8s"
-i<-123
+i<-105
 lat<-points_coords[i,2]
 long<-points_coords[i,1]
-urll<-format_url(lat,long,radius=50000,type="bank",key)
-data<-places_query(urll)
+url<-format_url(lat,long,radius=5000,type="bank",key)
+banks<-places_query(url)
 

@@ -49,7 +49,7 @@ format_url<-function(lat,long,radius,type,key){
 next_page<-function(json){
         if (!is.null(json$next_page_token)){
                 token<-json$next_page_token
-                urll<-paste(urll,"&pageToken", token, sep="")
+                urll<-paste(urll,"&pagetoken=", token, sep="")
                 return(urll)
         }
         else {
@@ -64,34 +64,35 @@ places_query<-function(url_query){
         term_cond<-""
         sdoc<-list()
         data<-list()
-        #x<-list()
-        url_query<-url_query
         while(!is.null(term_cond)){
                 iter<-iter+1
-                #x[[iter]]<-url_query
                 sdoc[[iter]]<-getURL(url_query) # EL PROBLEMA ESTA EN QUE NO ACTUALIZA ESTA URL
                 data[[iter]]<-fromJSON(sdoc[[iter]])
-                term_cond<-data[[iter]]$next_page_token
                 url_query<-next_page(data[[iter]])
-                #print(url_query)
-                #if(iter==11){
-                #        break
-                #}
-        }
-        return(x)
+                print(term_cond)
+                term_cond<-data[[iter]]$next_page_token
+               }
+        return(data)
 }
 
 key<-"AIzaSyCIsAa6qFbyca8ntlIjZTPedtGGAos-R8s"
 i<-65
 lat<-points_coords[i,2]
 long<-points_coords[i,1]
-urll<-format_url(lat,long,radius=5000,type="bank",key)
+urll<-format_url(lat,long,radius=50000,type="bank",key)
 data<-places_query(urll)
 
 
 
 
-data[3]
+
+
+
+x <- lapply(data,function(x){x$results$vicinity})
+names(data[[1]]$name)
+
+xx<-unlist(x)
+table(xx)
 
 
 data[[4]]$next_page_token

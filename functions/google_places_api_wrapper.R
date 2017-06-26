@@ -64,74 +64,21 @@ places_query<-function(url_query){
         term_cond<-""
         sdoc<-list()
         data<-list()
+        url_query2<-url_query
         while(!is.null(term_cond)){
                 iter<-iter+1
-                sdoc[[iter]]<-getURL(url_query) # EL PROBLEMA ESTA EN QUE NO ACTUALIZA ESTA URL
+                sdoc[[iter]]<-getURL(url_query2) 
                 data[[iter]]<-fromJSON(sdoc[[iter]])
-                url_query<-next_page(data[[iter]])
-                print(term_cond)
+                url_query2<-next_page(data[[iter]])
                 term_cond<-data[[iter]]$next_page_token
                }
         return(data)
 }
 
 key<-"AIzaSyCIsAa6qFbyca8ntlIjZTPedtGGAos-R8s"
-i<-65
+i<-123
 lat<-points_coords[i,2]
 long<-points_coords[i,1]
 urll<-format_url(lat,long,radius=50000,type="bank",key)
 data<-places_query(urll)
-
-
-
-
-
-
-
-x <- lapply(data,function(x){x$results$vicinity})
-names(data[[1]]$name)
-
-xx<-unlist(x)
-table(xx)
-
-
-data[[4]]$next_page_token
-
-term_cond<-data[[1]]$next_page_token
-
-next_page(data[[1]])
-
-xxx<-lapply(data,function(x){x$next_page_token})
-duplicated(xxx)
-data[[1]]$results$name
-
-data[[1]]$results
-
-
-
-
-sdoc[[1]]<-getURL(url)
-data[[1]]<-fromJSON(sdoc[[1]])
-
-sdoc[[2]]<-getURL(next_page(data[[1]]))
-data[[2]]<-fromJSON(sdoc[[2]])
-
-sdoc[[3]]<-getURL(next_page(data[[2]]))
-data[[3]]<-fromJSON(sdoc[[3]])
-
-
-next_page(data[[2]])
-
-for i in nrow(points){
-        lat<-points_coords[i,2]
-        long<-points_coords[i,1]
-        url<-format_url(lat,long)
-        
-        sdoc<-getURL(url)
-        x<-fromJSON(sdoc)
-        x$results$geometry
-}
-
-
-
 

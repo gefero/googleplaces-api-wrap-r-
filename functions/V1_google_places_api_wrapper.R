@@ -81,7 +81,6 @@ near_by_dist_query<-function(url_query){
         return(data)
 }
 
-
 #key<-"AIzaSyCIsAa6qFbyca8ntlIjZTPedtGGAos-R8s"
 key<-"AIzaSyDwDbAEVCORrSKQFE5zwxLsqsITCTOyoIg"
 ptm <- proc.time()
@@ -96,8 +95,10 @@ for (i in 1:nrow_points){
 }
 proc.time() - ptm
 
-url_dist<-format_url(query="nearby",key=key, type="bank", lat, long, rank_by = "distance")
-data<-near_by_dist_query(url_dist)
+x<-lapply(bank_dist, function(x){data.frame(cbind(x$name,x$geometry$location$lat,x$geometry$location$lng))})
+xx<-do.call(rbind,x)
+colnames(xx)<-c("Name","Lat","Long")
+write.csv(xx,"/media/digitalhouse/Elements3/MTEySS/Local/grosati/Proyectos/googleplaces-api-r/tests/banks_gba.csv",row.names = FALSE)
 
 
 
@@ -106,6 +107,9 @@ data<-near_by_dist_query(url_dist)
 
 
 #Examples of use
+url_dist<-format_url(query="nearby",key=key, type="bank", lat, long, rank_by = "distance")
+data<-near_by_dist_query(url_dist)
+
 urll<-format_url(query="radar",key=key, type="bank", lat, long,radius=50000)
 data<-radar_query(urll)
 

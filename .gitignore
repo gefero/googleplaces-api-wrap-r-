@@ -4,6 +4,7 @@
 
 # Folders not used
 cartografia/
+test/
 
 # Session Data files
 .RData
